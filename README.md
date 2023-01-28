@@ -1,5 +1,8 @@
 # Programming task
 
+## Understanding the problem
+The HolidayPlanner class should return number of holidays to be spent by a person withing the given time span.
+
 ## Statement
 Design and implement a HolidayPlanner class. The purpose of the
 first version of the class is to:
