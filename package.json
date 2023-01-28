@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/hostmepanda/test-task-holiday-planner/issues"
   },
-  "homepage": "https://github.com/hostmepanda/test-task-holiday-planner#readme"
+  "homepage": "https://github.com/hostmepanda/test-task-holiday-planner#readme",
+  "devDependencies": {
+    "jest": "^29.4.1"
+  }
 }
