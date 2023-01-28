@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hostmepanda/test-task-holiday-planner#readme",
   "devDependencies": {
+    "@types/jest": "^29.4.0",
     "jest": "^29.4.1"
   },
   "dependencies": {
