@@ -3,6 +3,9 @@ import { HolidayPlanner } from './holidayPlanner.class';
 describe('HolidayPlanner class', function () {
   let holidayPlanner;
 
+  describe('Time span', function () {
+
+  });
   describe('Without setting time span', function () {
     beforeAll(() => {
       holidayPlanner = new HolidayPlanner();
@@ -157,6 +160,25 @@ describe('HolidayPlanner class', function () {
     });
     it('Should not set time span', () => {
       expect(holidayPlanner.timeSpan).toEqual(undefined);
+    });
+  });
+  describe('Consumed holiday days', () => {
+    describe('Valid time span', () => {
+      describe('With 5 working days', function () {
+        beforeAll(() => {
+          holidayPlanner = new HolidayPlanner();
+          holidayPlanner.timeSpan = '1.12.2022 - 7.12.2022';
+        });
+        afterAll(() => {
+          holidayPlanner = null;
+        });
+        it('Should return 5 days', () => {
+          expect(holidayPlanner.getConsumedHolidayDays()).toEqual({
+            unit: 'days',
+            value: 5,
+          });
+        });
+      });
     });
   });
 });
