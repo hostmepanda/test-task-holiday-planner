@@ -20,30 +20,59 @@ describe('TimeSpanClass class', function () {
   });
 
   describe('With correct time span input', () => {
-    let thrownError: Partial<Error>;
-    const correctTimeSpan = '21.7.2022';
+    describe('Correct date', function () {
+      let thrownError: Partial<Error>;
+      const correctTimeSpan = '21.7.2022';
 
-    beforeAll(() => {
-      testTimeSpan = new TimeSpan();
-    });
+      beforeAll(() => {
+        testTimeSpan = new TimeSpan();
+      });
 
-    beforeAll(() => {
-      try {
-        testTimeSpan.timeSpan = correctTimeSpan;
-      } catch (error: unknown) {
-        thrownError = error;
-      }
-    });
+      beforeAll(() => {
+        try {
+          testTimeSpan.timeSpan = correctTimeSpan;
+        } catch (error: unknown) {
+          thrownError = error;
+        }
+      });
 
-    afterAll(() => {
-      testTimeSpan = null;
-    });
+      afterAll(() => {
+        testTimeSpan = null;
+      });
 
-    it('Should not throw errors', () => {
-      expect(thrownError).toBe(undefined);
+      it('Should not throw errors', () => {
+        expect(thrownError).toBe(undefined);
+      });
+      it('Should set time span with provided value', () => {
+        expect(testTimeSpan.timeSpan).toEqual(correctTimeSpan);
+      });
     });
-    it('Should set time span with provided value', () => {
-      expect(testTimeSpan.timeSpan).toEqual(correctTimeSpan);
+    describe('Null as input', function () {
+      let thrownError: Partial<Error>;
+      const correctTimeSpan = null;
+
+      beforeAll(() => {
+        testTimeSpan = new TimeSpan();
+      });
+
+      beforeAll(() => {
+        try {
+          testTimeSpan.timeSpan = correctTimeSpan;
+        } catch (error: unknown) {
+          thrownError = error;
+        }
+      });
+
+      afterAll(() => {
+        testTimeSpan = null;
+      });
+
+      it('Should not throw errors', () => {
+        expect(thrownError).toBe(undefined);
+      });
+      it('Should set time span to undefined', () => {
+        expect(testTimeSpan.timeSpan).toEqual(undefined);
+      });
     });
   });
 

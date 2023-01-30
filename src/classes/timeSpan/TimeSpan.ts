@@ -111,7 +111,24 @@ export class TimeSpan {
   }
 
   set timeSpan(dateString: string) {
+    if (dateString === null) {
+      this.timeSpanDay = undefined;
+      this.timeSpanMonth = undefined;
+      this.timeSpanYear = undefined;
+
+      return;
+    }
+
     this.validateDateString(dateString)
       .parseDate(dateString);
+  }
+
+  get timeSpanObject() {
+    return {
+      day: this.timeSpanDay,
+      month: this.timeSpanMonth,
+      year: this.timeSpanYear,
+      value: this.timeSpan,
+    }
   }
 }
