@@ -1,6 +1,9 @@
 import { TimeSpan } from './classes/timeSpan/TimeSpan';
+import { nationalHolidays } from './constants/nationalHolidays.constant';
+import { CountryIso3166Alpha3 } from './enums/country.enum';
 
 export class HolidayPlanner {
+  private _country
   private _timeSpanStartDate
 
   private _timeSpanEndDate
@@ -11,9 +14,12 @@ export class HolidayPlanner {
 
   private holidayEndPeriodParams = { day: 31, month: 3 }
 
+  private nationalHolidays = nationalHolidays
+
   constructor() {
     this._timeSpanStartDate = new TimeSpan();
     this._timeSpanEndDate = new TimeSpan();
+    this._country = CountryIso3166Alpha3.FIN;
   }
 
   get timeSpan() {
