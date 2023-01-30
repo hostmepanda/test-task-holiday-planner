@@ -15,6 +15,12 @@ describe('HolidayPlanner class', function () {
     it('Should have timeSpan prop', () => {
       expect(holidayPlanner).toHaveProperty('timeSpan');
     });
+    it('Should have country prop', () => {
+      expect(holidayPlanner).toHaveProperty('country');
+    });
+    it('Should set country prop to FIN', () => {
+      expect(holidayPlanner.country).toEqual('FIN');
+    });
     it('timeSpan prop should be undefined', () => {
       expect(holidayPlanner.timeSpan).toEqual(undefined);
     });

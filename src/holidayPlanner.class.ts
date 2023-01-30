@@ -127,4 +127,8 @@ export class HolidayPlanner {
       );
     }
   }
+
+  get country() {
+    return this._country;
+  }
 }
