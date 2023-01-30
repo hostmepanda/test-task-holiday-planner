@@ -1,6 +1,6 @@
 import { ErrorMessage } from './enums/errorMessage.enum';
 
-export class TimeSpanClass {
+export class TimeSpan {
   private timeSpanDay
   private timeSpanMonth
   private timeSpanYear

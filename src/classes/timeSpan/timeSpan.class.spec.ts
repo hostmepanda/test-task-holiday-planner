@@ -1,4 +1,4 @@
-import { TimeSpanClass } from './TimeSpan.class';
+import { TimeSpan } from './TimeSpan';
 import { ErrorMessage } from './enums/errorMessage.enum';
 
 describe('TimeSpanClass class', function () {
@@ -6,7 +6,7 @@ describe('TimeSpanClass class', function () {
 
   describe('Without setting time span', () => {
     beforeAll(() => {
-      testTimeSpan = new TimeSpanClass();
+      testTimeSpan = new TimeSpan();
     });
 
     afterAll(() => {
@@ -24,7 +24,7 @@ describe('TimeSpanClass class', function () {
     const correctTimeSpan = '21.7.2022';
 
     beforeAll(() => {
-      testTimeSpan = new TimeSpanClass();
+      testTimeSpan = new TimeSpan();
     });
 
     beforeAll(() => {
@@ -53,7 +53,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidDay = '32.17.2022';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -81,7 +81,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidMonth = '21.17.2022';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -109,7 +109,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanOutBoundsYear = '21.4.2023';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -137,7 +137,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidLength = '21.42023';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -165,7 +165,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidLength = '0123456789';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -193,7 +193,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidDay = 'AB.4.2023';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -221,7 +221,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidMonth = '14.D.2023';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
@@ -249,7 +249,7 @@ describe('TimeSpanClass class', function () {
       const timeSpanInvalidYear = '14.4.20AA';
 
       beforeAll(() => {
-        testTimeSpan = new TimeSpanClass();
+        testTimeSpan = new TimeSpan();
       });
 
       beforeAll(() => {
