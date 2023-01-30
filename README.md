@@ -3,6 +3,13 @@
 ## Understanding the problem
 The HolidayPlanner class should return number of holidays to be spent by a person withing the given time span.
 
+## Compromises
+- Since it's a first version of a tool, an assumption against date format is made: in this version we support 
+European date format as DD.MM.YYYY
+- Year should be passed as full year e.g. 20XX, if short 2 digit year is passed then a validation error is thrown
+- Requirement to delimiter are not mentioned, so dot is used a default delimiter in this version
+- Date format, remove leading zeros in day and month
+
 ## Statement
 Design and implement a HolidayPlanner class. The purpose of the
 first version of the class is to:
