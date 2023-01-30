@@ -6,7 +6,7 @@ export type NationalHolidays = {
 
 export const nationalHolidays: NationalHolidays = {
   FIN: {
-    2022: [
+    2021: [
       '1.1.2021',
       '6.1.2021',
       '2.4.2021',
@@ -16,7 +16,7 @@ export const nationalHolidays: NationalHolidays = {
       '6.12.2021',
       '24.12.2021',
     ],
-    2023: [
+    2022: [
       '1.1.2022',
       '6.1.2022',
       '15.4.2022',
