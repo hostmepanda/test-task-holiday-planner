@@ -9,6 +9,7 @@ European date format as DD.MM.YYYY
 - Year should be passed as full year e.g. 20XX, if short 2 digit year is passed then a validation error is thrown
 - Requirement to delimiter are not mentioned, so dot is used a default delimiter in this version
 - Date format, remove leading zeros in day and month
+- Avoid implementing the dates of the time span swap
 
 ## Statement
 Design and implement a HolidayPlanner class. The purpose of the
