@@ -25,27 +25,11 @@ export class HolidayPlanner {
   }
 
   private checkTimeSpanHolidayPeriod(): void | Error {
-    const startDate = this._timeSpanStartDate.timeSpanObject;
-    const endDate = this._timeSpanEndDate.timeSpanObject;
-
     const startDateMs = this.getStartDateMs();
     const endDateMs = this.getEndDateMs();
 
-    const holidayStartDateMs = (
-      new Date(
-        startDate.year,
-        this.holidayStartPeriodParams.month - 1,
-        this.holidayStartPeriodParams.day,
-      )
-    ).valueOf();
-
-    const holidayEndDateMs = (
-      new Date(
-        endDate.year,
-        this.holidayEndPeriodParams.month - 1,
-        this.holidayEndPeriodParams.day,
-      )
-    ).valueOf();
+    const holidayStartDateMs = this.getHolidayPeriodStartDateMs();
+    const holidayEndDateMs = this.getHolidayPeriodEndDateMs();
 
     const isHolidayStartDateWithinTimeSpan = holidayStartDateMs > startDateMs && holidayStartDateMs < endDateMs;
     const isHolidayEndDateWithinTimeSpan = holidayEndDateMs > startDateMs && holidayEndDateMs < endDateMs;
@@ -63,7 +47,13 @@ export class HolidayPlanner {
     ).valueOf();
   }
 
-  private countDatePeriodSundays(periodStartDate: Date, periodEndDate: Date): number {
+  private countTimeSpanSundays(): number {
+    const startDateMs = this.getStartDateMs();
+    const endDateMs = this.getEndDateMs();
+
+    const periodStartDate = new Date(startDateMs);
+    const periodEndDate = new Date(endDateMs);
+
     const SUNDAY: number = 0;
     const ONE_DAY: number = 1;
 
@@ -83,8 +73,78 @@ export class HolidayPlanner {
     return sundaysCount;
   }
 
+  private countHolidayDaysInPeriod(): number {
+    const startDateMs = this.getStartDateMs();
+    const endDateMs = this.getEndDateMs();
+
+    const { year: startDateYear } = this._timeSpanStartDate.timeSpanObject;
+    const { year: endDateYear } = this._timeSpanEndDate.timeSpanObject;
+
+    const timeSpanYears = [
+      ...Array.from(
+        new Set([startDateYear, endDateYear]),
+      ),
+    ];
+
+    const listOfHolidays: [string, string[]][] = Object.entries(this.nationalHolidays[this._country]);
+
+    const filteredNationalHolidays: number[] = listOfHolidays
+      .filter(([year]) => timeSpanYears.includes(Number(year)))
+      .flatMap(([_, holidays]) => holidays)
+      .map(this.convertTextDateToMilliseconds)
+      .filter(holidayMs => this.filterHolidaysExcludingSundays(holidayMs, startDateMs, endDateMs));
+
+    return filteredNationalHolidays.length;
+  }
+
+  private countTimeSpanDays(): number {
+    const startDateMs = this.getStartDateMs();
+    const endDateMs = this.getEndDateMs();
+
+    return Math.round((endDateMs - startDateMs) / ONE_DAY_MS);
+  }
+
   get country(): CountryIso3166Alpha3 {
     return this._country;
+  }
+
+  private filterHolidaysExcludingSundays(holidayMs: number, startDateMs: number, endDateMs: number): boolean {
+    const SUNDAY = 0;
+
+    const isHolidayOnSunday = new Date(holidayMs).getDay() === SUNDAY;
+
+    if (isHolidayOnSunday) {
+      return false;
+    }
+    return holidayMs >= startDateMs && holidayMs <= endDateMs
+  }
+
+  private getHolidayPeriodStartDateMs(): number {
+    this.throwIfTimeSpanStartIsNotSet();
+
+    const startDate = this._timeSpanStartDate.timeSpanObject;
+
+    return (
+      new Date(
+        startDate.year,
+        this.holidayStartPeriodParams.month - 1,
+        this.holidayStartPeriodParams.day,
+      )
+    ).valueOf();
+  }
+
+  private getHolidayPeriodEndDateMs(): number {
+    this.throwIfTimeSpanEndIsNotSet();
+
+    const endDate = this._timeSpanEndDate.timeSpanObject;
+
+    return (
+      new Date(
+        endDate.year,
+        this.holidayEndPeriodParams.month - 1,
+        this.holidayEndPeriodParams.day,
+      )
+    ).valueOf();
   }
 
   private isEndDateBeforeStartDate(): boolean {
@@ -105,52 +165,45 @@ export class HolidayPlanner {
   }
 
   public getConsumedHolidayDays(): number {
-    this.throwIfTimeSpanIsNotSet();
-
-    const { year: startDateYear } = this._timeSpanStartDate.timeSpanObject;
-    const { year: endDateYear } = this._timeSpanEndDate.timeSpanObject;
-
-    const startDateMs = this.getStartDateMs();
-    const endDateMs = this.getEndDateMs();
-
-    const timeSpanYears = [
-      ...Array.from(
-        new Set([startDateYear, endDateYear]),
-      ),
-    ];
-
-    const nationalHolidaysMsList = Object.entries(this.nationalHolidays[this._country])
-      .filter(([year]) => timeSpanYears.includes(Number(year)))
-      .flatMap(([_, holidays]) => holidays)
-      .map(this.convertTextDateToMilliseconds)
-      .filter(
-        holidayMs => {
-          const isHolidayOnSunday = new Date(holidayMs).getDay() === 0;
-          if (isHolidayOnSunday) {
-            return false;
-          }
-          return holidayMs >= startDateMs && holidayMs <= endDateMs
-        },
-      );
-
-    const nonConsumableNationalHolidaysCount = nationalHolidaysMsList.length;
-    const sundaysInTimeSpanCount = this.countDatePeriodSundays(new Date(startDateMs), new Date(endDateMs));
-
-    const consumedRegularHolidayDays = Math.round((endDateMs - startDateMs) / ONE_DAY_MS);
+    const nonConsumableNationalHolidaysCount = this.countHolidayDaysInPeriod();
+    const sundaysInTimeSpanCount = this.countTimeSpanSundays();
+    const consumedRegularHolidayDays = this.countTimeSpanDays();
 
     return consumedRegularHolidayDays - sundaysInTimeSpanCount - nonConsumableNationalHolidaysCount;
   }
 
   private getEndDateMs(): number {
+    this.throwIfTimeSpanEndIsNotSet();
+
     const endDate = this._timeSpanEndDate.timeSpanObject;
 
-    return (new Date(endDate.year, endDate.month - 1, endDate.day, 23, 59, 59)).valueOf();
+    return (
+      new Date(
+        endDate.year,
+        endDate.month - 1,
+        endDate.day,
+        23,
+        59,
+        59,
+      )
+    ).valueOf();
   }
 
   private getStartDateMs(): number {
+    this.throwIfTimeSpanStartIsNotSet();
+
     const startDate = this._timeSpanStartDate.timeSpanObject;
 
-    return (new Date(startDate.year, startDate.month - 1, startDate.day, 0, 0, 0)).valueOf();
+    return (
+      new Date(
+        startDate.year,
+        startDate.month - 1,
+        startDate.day,
+        0,
+        0,
+        0,
+      )
+    ).valueOf();
   }
 
   get timeSpan(): string | undefined {
@@ -197,12 +250,18 @@ export class HolidayPlanner {
     }
   }
 
-  private throwIfTimeSpanIsNotSet(): void | Error {
-    const isTimeSpanStartDateSet = this._timeSpanStartDate.timeSpan;
+  private throwIfTimeSpanEndIsNotSet(): void | Error {
     const isTimeSpanEndDateSet = this._timeSpanEndDate.timeSpan;
-    const isTimeSpanSet = isTimeSpanStartDateSet && isTimeSpanEndDateSet;
 
-    if (!isTimeSpanSet) {
+    if (!isTimeSpanEndDateSet) {
+      throw new Error(ErrorMessage.TimeSpanMustBeSet);
+    }
+  }
+
+  private throwIfTimeSpanStartIsNotSet(): void | Error {
+    const isTimeSpanStartDateSet = this._timeSpanStartDate.timeSpan;
+
+    if (!isTimeSpanStartDateSet) {
       throw new Error(ErrorMessage.TimeSpanMustBeSet);
     }
   }

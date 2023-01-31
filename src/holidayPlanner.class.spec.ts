@@ -28,7 +28,7 @@ describe('HolidayPlanner class', () => {
   });
   describe('Method: set timeSpan', () => {
     describe('Time span period', () => {
-      describe('Valid time span', () => {
+      describe('Valid time span as string', () => {
         const validTimeSpan = '11.1.2022 - 30.1.2022';
 
         beforeAll(() => {
@@ -42,6 +42,22 @@ describe('HolidayPlanner class', () => {
 
         it('Should set time span', () => {
           expect(holidayPlanner.timeSpan).toEqual(validTimeSpan);
+        });
+      });
+      describe('Valid time span as array', () => {
+        const validTimeSpanPeriod = ['11.1.2022','30.1.2022'];
+
+        beforeAll(() => {
+          holidayPlanner = new HolidayPlanner();
+          holidayPlanner.timeSpan = validTimeSpanPeriod;
+        });
+
+        afterAll(() => {
+          holidayPlanner = null;
+        });
+
+        it('Should set time span', () => {
+          expect(holidayPlanner.timeSpan).toEqual(validTimeSpanPeriod.join(' - '));
         });
       });
     });

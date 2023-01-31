@@ -11,6 +11,7 @@ European date format as DD.MM.YYYY
 - Date format, remove leading zeros in day and month
 - Avoid implementing the start and end dates of the time span swap
 - Implementation doesn't consider the leap year, since neither 2021 nor 2022 are the leap year
+- No time management libraries are used
 
 ## Statement
 Design and implement a HolidayPlanner class. The purpose of the
