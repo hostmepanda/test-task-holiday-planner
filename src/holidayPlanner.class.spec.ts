@@ -202,7 +202,6 @@ describe('HolidayPlanner class', () => {
       });
     });
   });
-
   describe('Method: getConsumedHolidayDays', () => {
     describe('Execute method before setting time span', () => {
       let validationError: Partial<Error>;
