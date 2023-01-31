@@ -1,10 +1,11 @@
 import { TimeSpan } from './classes/timeSpan/TimeSpan';
-import { NationalHolidays, nationalHolidays, ONE_DAY_MS } from './constants';
-import { CountryIso3166Alpha3 } from './enums/country.enum';
+
+import { nationalHolidays, NationalHolidays, ONE_DAY_MS } from './constants';
 import { HolidayPeriodParams } from './types';
+import { CountryIso3166Alpha3, ErrorMessage } from './enums';
 
 export class HolidayPlanner {
-  private readonly _country
+  private readonly _country: CountryIso3166Alpha3
   private _timeSpanStartDate: TimeSpan
 
   private _timeSpanEndDate: TimeSpan
@@ -51,11 +52,11 @@ export class HolidayPlanner {
 
     try {
       if (this.isEndDateBeforeStartDate()) {
-        throw new Error('TIme span start date should be before the end date');
+        throw new Error(ErrorMessage.StartDateMustBeforeEndDate);
       }
 
       if (this.isTimeSpanExceeds50Days()) {
-        throw new Error('The maximum length of the time span is 50 days');
+        throw new Error(ErrorMessage.MaximumLength50Days);
       }
 
       this.checkTimeSpanHolidayPeriod();
@@ -123,10 +124,7 @@ export class HolidayPlanner {
     const isHolidayEndDateWithinTimeSpan = holidayEndDateMs > startDateMs && holidayEndDateMs < endDateMs;
 
     if (isHolidayStartDateWithinTimeSpan || isHolidayEndDateWithinTimeSpan) {
-      throw new Error(
-        'Time span has to be within the same holiday period that begins on the 1st\n' +
-        'of April and ends on the 31st of March.',
-      );
+      throw new Error(ErrorMessage.TimeSpanOutsideHolidayPeriod);
     }
   }
 

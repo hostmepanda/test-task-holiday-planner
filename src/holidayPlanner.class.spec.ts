@@ -1,4 +1,5 @@
 import { HolidayPlanner } from './holidayPlanner.class';
+import { ErrorMessage } from './enums';
 
 describe('HolidayPlanner class', function () {
   let holidayPlanner;
@@ -26,23 +27,25 @@ describe('HolidayPlanner class', function () {
     });
   });
   describe('Method: set timeSpan', () => {
-    describe('With valid time span', function () {
-      const validTimeSpan = '11.1.2022 - 30.1.2022';
+    describe('Time span period', function () {
+      describe('Valid time span', function () {
+        const validTimeSpan = '11.1.2022 - 30.1.2022';
 
-      beforeAll(() => {
-        holidayPlanner = new HolidayPlanner();
-        holidayPlanner.timeSpan = validTimeSpan;
-      });
+        beforeAll(() => {
+          holidayPlanner = new HolidayPlanner();
+          holidayPlanner.timeSpan = validTimeSpan;
+        });
 
-      afterAll(() => {
-        holidayPlanner = null;
-      });
+        afterAll(() => {
+          holidayPlanner = null;
+        });
 
-      it('Should set time span', () => {
-        expect(holidayPlanner.timeSpan).toEqual(validTimeSpan);
+        it('Should set time span', () => {
+          expect(holidayPlanner.timeSpan).toEqual(validTimeSpan);
+        });
       });
     });
-    describe('Time span length', function () {
+    describe('Time span period days length', function () {
       describe('Greater than 50 days', function () {
         const timeSpan51Days = '1.8.2022 - 21.9.2022';
         let validationError: Partial<Error>;
@@ -61,7 +64,7 @@ describe('HolidayPlanner class', function () {
         });
 
         it('Should throw validation error', () => {
-          expect(validationError?.message).toEqual('The maximum length of the time span is 50 days');
+          expect(validationError?.message).toEqual(ErrorMessage.MaximumLength50Days);
         });
         it('Should NOT set time span prop', () => {
           expect(holidayPlanner.timeSpan).toEqual(undefined);
@@ -151,10 +154,32 @@ describe('HolidayPlanner class', function () {
       });
 
       it('Should throw outside holiday period error', () => {
-        expect(validationError.message).toEqual(
-          'Time span has to be within the same holiday period that begins on the 1st\n' +
-          'of April and ends on the 31st of March.',
-        );
+        expect(validationError.message).toEqual(ErrorMessage.TimeSpanOutsideHolidayPeriod);
+      });
+      it('Should NOT set time span property', () => {
+        expect(holidayPlanner.timeSpan).toEqual(undefined);
+      });
+    });
+    describe('Time span start date after end date', function () {
+      const timeSpanOutsideHolidayPeriod = '20.6.2022 - 20.4.2022';
+      let validationError: Partial<Error>;
+
+      beforeAll(() => {
+        holidayPlanner = new HolidayPlanner();
+
+        try {
+          holidayPlanner.timeSpan = timeSpanOutsideHolidayPeriod;
+        } catch (error: unknown) {
+          validationError = error;
+        }
+      });
+
+      afterAll(() => {
+        holidayPlanner = null;
+      });
+
+      it('Should throw date ordering error', () => {
+        expect(validationError.message).toEqual(ErrorMessage.StartDateMustBeforeEndDate);
       });
       it('Should NOT set time span property', () => {
         expect(holidayPlanner.timeSpan).toEqual(undefined);
