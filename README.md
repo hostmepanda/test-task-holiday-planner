@@ -3,6 +3,16 @@
 ## Understanding the problem
 The HolidayPlanner class should return number of holidays to be spent by a person withing the given time span.
 
+## Challenges
+- Split the logic onto methods
+- Define the entities or fields of the problem that can be extracted to standalone task
+- Date handling, there a lot of things to consider. Basically not using some date managing library is a challenge itself :)
+
+## Further improvements
+- Extract timeSpan logic to standalone class
+- Add unit tests to all methods in both classes
+- Allow setup country and list of holidays for other countries
+
 ## Compromises
 - Since it's a first version of a tool, an assumption against date format is made: in this version we support 
 European date format as DD.MM.YYYY
@@ -60,9 +70,3 @@ Finnish national holidays for 2021 and 2022:
 Company’s quality requirements are:
 - The code must be unit testable
 - The code should adhere to SOLID principles
-
-Write a short description of:
-- how you understood the problem,
-- what challenges you had with the implementation
-- and what you could further improve in your implementation.
-- If you had to make compromises, we would like to hear about them.
