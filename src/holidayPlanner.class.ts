@@ -24,18 +24,6 @@ export class HolidayPlanner {
     this._country = CountryIso3166Alpha3.FIN;
   }
 
-  private calculateWeekendDays(fromDate, toDate): number {
-    let weekendDayCount = 0;
-
-    while(fromDate < toDate){
-      fromDate.setDate(fromDate.getDate() + 1);
-      if(fromDate.getDay() === 0){
-        ++weekendDayCount ;
-      }
-    }
-    return weekendDayCount ;
-  }
-
   private checkTimeSpanHolidayPeriod(): void | Error {
     const startDate = this._timeSpanStartDate.timeSpanObject;
     const endDate = this._timeSpanEndDate.timeSpanObject;
@@ -75,6 +63,26 @@ export class HolidayPlanner {
     ).valueOf();
   }
 
+  private countDatePeriodSundays(periodStartDate: Date, periodEndDate: Date): number {
+    const SUNDAY: number = 0;
+    const ONE_DAY: number = 1;
+
+    let sundaysCount:number = 0;
+
+    while(periodStartDate < periodEndDate){
+      const nextDate = periodStartDate.getDate() + ONE_DAY;
+
+      periodStartDate.setDate(nextDate);
+      const isSunday = periodStartDate.getDay() === SUNDAY;
+
+      if(isSunday){
+        sundaysCount += 1;
+      }
+    }
+
+    return sundaysCount;
+  }
+
   get country(): CountryIso3166Alpha3 {
     return this._country;
   }
@@ -97,6 +105,8 @@ export class HolidayPlanner {
   }
 
   public getConsumedHolidayDays(): number {
+    this.throwIfTimeSpanIsNotSet();
+
     const { year: startDateYear } = this._timeSpanStartDate.timeSpanObject;
     const { year: endDateYear } = this._timeSpanEndDate.timeSpanObject;
 
@@ -124,7 +134,7 @@ export class HolidayPlanner {
       );
 
     const nonConsumableNationalHolidaysCount = nationalHolidaysMsList.length;
-    const sundaysInTimeSpanCount = this.calculateWeekendDays(new Date(startDateMs), new Date(endDateMs));
+    const sundaysInTimeSpanCount = this.countDatePeriodSundays(new Date(startDateMs), new Date(endDateMs));
 
     const consumedRegularHolidayDays = Math.round((endDateMs - startDateMs) / ONE_DAY_MS);
 
@@ -184,6 +194,16 @@ export class HolidayPlanner {
       this._timeSpanEndDate.timeSpan = null;
 
       throw error;
+    }
+  }
+
+  private throwIfTimeSpanIsNotSet(): void | Error {
+    const isTimeSpanStartDateSet = this._timeSpanStartDate.timeSpan;
+    const isTimeSpanEndDateSet = this._timeSpanEndDate.timeSpan;
+    const isTimeSpanSet = isTimeSpanStartDateSet && isTimeSpanEndDateSet;
+
+    if (!isTimeSpanSet) {
+      throw new Error(ErrorMessage.TimeSpanMustBeSet);
     }
   }
 }

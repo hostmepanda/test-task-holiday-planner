@@ -1,10 +1,10 @@
 import { HolidayPlanner } from './holidayPlanner.class';
 import { ErrorMessage } from './enums';
 
-describe('HolidayPlanner class', function () {
+describe('HolidayPlanner class', () => {
   let holidayPlanner;
 
-  describe('Instance creation', function () {
+  describe('Instance creation', () => {
     beforeAll(() => {
       holidayPlanner = new HolidayPlanner();
     });
@@ -27,8 +27,8 @@ describe('HolidayPlanner class', function () {
     });
   });
   describe('Method: set timeSpan', () => {
-    describe('Time span period', function () {
-      describe('Valid time span', function () {
+    describe('Time span period', () => {
+      describe('Valid time span', () => {
         const validTimeSpan = '11.1.2022 - 30.1.2022';
 
         beforeAll(() => {
@@ -45,8 +45,8 @@ describe('HolidayPlanner class', function () {
         });
       });
     });
-    describe('Time span period days length', function () {
-      describe('Greater than 50 days', function () {
+    describe('Time span period days length', () => {
+      describe('Greater than 50 days', () => {
         const timeSpan51Days = '1.8.2022 - 21.9.2022';
         let validationError: Partial<Error>;
 
@@ -70,7 +70,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.timeSpan).toEqual(undefined);
         });
       });
-      describe('Less than 50 days same year', function () {
+      describe('Less than 50 days same year', () => {
         const timeSpanLess50Days = '1.8.2022 - 21.8.2022';
         let validationError: Partial<Error>;
 
@@ -94,7 +94,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.timeSpan).toEqual(timeSpanLess50Days);
         });
       });
-      describe('Less than 50 days with year change', function () {
+      describe('Less than 50 days with year change', () => {
         const timeSpanLess50Days = '13.12.2021 - 31.1.2022';
         let validationError: Partial<Error>;
 
@@ -119,7 +119,7 @@ describe('HolidayPlanner class', function () {
         });
       });
     });
-    describe('Time span within holiday period', function () {
+    describe('Time span within holiday period', () => {
       const timeSpanInHolidayPeriod = '11.12.2021 - 15.1.2022';
 
       beforeAll(() => {
@@ -135,7 +135,7 @@ describe('HolidayPlanner class', function () {
         expect(holidayPlanner.timeSpan).toEqual(timeSpanInHolidayPeriod);
       });
     });
-    describe('Time span outside holiday period', function () {
+    describe('Time span outside holiday period', () => {
       const timeSpanOutsideHolidayPeriod = '20.3.2022 - 20.4.2022';
       let validationError: Partial<Error>;
 
@@ -160,7 +160,7 @@ describe('HolidayPlanner class', function () {
         expect(holidayPlanner.timeSpan).toEqual(undefined);
       });
     });
-    describe('Time span start date after end date', function () {
+    describe('Time span start date after end date', () => {
       const timeSpanOutsideHolidayPeriod = '20.6.2022 - 20.4.2022';
       let validationError: Partial<Error>;
 
@@ -188,8 +188,26 @@ describe('HolidayPlanner class', function () {
   });
 
   describe('Method: getConsumedHolidayDays', () => {
+    describe('Execute method before setting time span', () => {
+      let validationError: Partial<Error>;
+
+      beforeAll(() => {
+        try {
+          holidayPlanner = new HolidayPlanner();
+          holidayPlanner.getConsumedHolidayDays();
+        } catch (error: unknown) {
+          validationError = error;
+        }
+      });
+      afterAll(() => {
+        holidayPlanner = null;
+      });
+      it(`Should throw time span must be set error`, () => {
+        expect(validationError.message).toEqual(ErrorMessage.TimeSpanMustBeSet);
+      });
+    });
     describe('Valid time span', () => {
-      describe('5 working days, no holidays within the period', function () {
+      describe('5 working days, no holidays within the period', () => {
         const expectedConsumedDays = 5;
 
         beforeAll(() => {
@@ -203,7 +221,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('7 calendar days, no holidays within the period', function () {
+      describe('7 calendar days, no holidays within the period', () => {
         const expectedConsumedDays = 6;
 
         beforeAll(() => {
@@ -217,7 +235,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('14 calendar days, no holidays within the period', function () {
+      describe('14 calendar days, no holidays within the period', () => {
         const expectedConsumedDays = 12;
 
         beforeAll(() => {
@@ -231,7 +249,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('5 working days, 1 holiday NOT on a Sunday within the period', function () {
+      describe('5 working days, 1 holiday NOT on a Sunday within the period', () => {
         const expectedConsumedDays = 4;
 
         beforeAll(() => {
@@ -245,7 +263,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('7 calendar days, 2 holidays within the period', function () {
+      describe('7 calendar days, 2 holidays within the period', () => {
         const expectedConsumedDays = 5;
 
         beforeAll(() => {
@@ -259,7 +277,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('4 calendar days, 2 holidays and Sunday within the period', function () {
+      describe('4 calendar days, 2 holidays and Sunday within the period', () => {
         const expectedConsumedDays = 1;
 
         beforeAll(() => {
@@ -273,7 +291,7 @@ describe('HolidayPlanner class', function () {
           expect(holidayPlanner.getConsumedHolidayDays()).toEqual(expectedConsumedDays);
         });
       });
-      describe('4 calendar days, 1 holiday which is Sunday within the period', function () {
+      describe('4 calendar days, 1 holiday which is Sunday within the period', () => {
         const expectedConsumedDays = 3;
 
         beforeAll(() => {
