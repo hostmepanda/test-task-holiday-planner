@@ -1,18 +1,21 @@
 import { ErrorMessage } from './enums/errorMessage.enum';
 
 export class TimeSpan {
-  private timeSpanDay
-  private timeSpanMonth
-  private timeSpanYear
-  private allowedYears = [2021, 2022];
+  protected timeSpanDay
 
-  private validateDateString(dateString) {
+  protected timeSpanMonth
+
+  protected timeSpanYear
+
+  protected allowedYears = [2021, 2022];
+
+  protected validateDateString(dateString) {
     this.checkDateLength(dateString);
 
     return this;
   }
 
-  private parseDate(date: string) {
+  protected parseDate(date: string) {
     const [day, month, year] = date.split('.');
 
     if (!day || !month || !year) {
@@ -28,7 +31,7 @@ export class TimeSpan {
     this.timeSpanYear = Number(year);
   }
 
-  private checkDateLength(date) {
+  protected checkDateLength(date) {
     if (date.length < 6 || date.length > 10) {
       throw new Error(ErrorMessage.ParseFailedWrongFormat);
     }
@@ -36,7 +39,7 @@ export class TimeSpan {
     return this;
   }
 
-  private checkDatePart(datePart: string) {
+  protected checkDatePart(datePart: string) {
     const isValidNUmber = !isNaN(Number(datePart));
 
     if (!isValidNUmber) {
@@ -46,7 +49,7 @@ export class TimeSpan {
     return this;
   }
 
-  private checkDateMonth(dateString: string) {
+  protected checkDateMonth(dateString: string) {
     this
       .checkDatePart(dateString)
       .checkMonthBounds(Number(dateString));
@@ -54,7 +57,7 @@ export class TimeSpan {
     return this;
   }
 
-  private checkDateDay(dateString: string) {
+  protected checkDateDay(dateString: string) {
     this
       .checkDatePart(dateString)
       .checkDayBounds(Number(dateString));
@@ -62,14 +65,14 @@ export class TimeSpan {
     return this;
   }
 
-  private checkDateYear(dateString: string) {
+  protected checkDateYear(dateString: string) {
     this.checkDatePart(dateString)
       .checkYearBounds(Number(dateString));
 
     return this;
   }
 
-  private checkDayBounds(day: number) {
+  protected checkDayBounds(day: number) {
     const isDayWithinValidBounds= day >= 1 && day <= 31;
 
     if (!isDayWithinValidBounds) {
@@ -77,7 +80,7 @@ export class TimeSpan {
     }
   }
 
-  private checkMonthBounds(month: number) {
+  protected checkMonthBounds(month: number) {
     const isMonthWithinValidBounds = month >= 1 && month <= 12;
 
     if (!isMonthWithinValidBounds) {
@@ -87,7 +90,7 @@ export class TimeSpan {
     return this;
   }
 
-  private checkYearBounds(year: number) {
+  protected checkYearBounds(year: number) {
     const isYearWithinValidBounds = this.allowedYears.includes(year);
 
     if (!isYearWithinValidBounds) {
