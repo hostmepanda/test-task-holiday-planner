@@ -147,21 +147,29 @@ export class HolidayPlanner {
     ).valueOf();
   }
 
-  private isEndDateBeforeStartDate(): boolean {
+  private checkTimeSpanEndDateBeforeStartDate(): void | Error {
     const startDateMs = this.getStartDateMs();
     const endDateMs = this.getEndDateMs();
 
-    return endDateMs - startDateMs < 0;
+    const isEndDateBeforeStartDate = endDateMs - startDateMs < 0;
+
+    if (isEndDateBeforeStartDate) {
+      throw new Error(ErrorMessage.StartDateMustBeforeEndDate);
+    }
   }
 
-  private isTimeSpanExceeds50Days(): boolean {
+  private checkTimeSpanExceeds50Days(): void | Error {
     const startDate = this.getStartDateMs();
     const endDate = this.getEndDateMs();
 
     const diffMilliseconds = endDate - startDate;
     const diffDays = Math.floor(diffMilliseconds / ONE_DAY_MS);
 
-    return diffDays >= this.maxTimeSpanDaysPeriod;
+    const isExceed50Days = diffDays >= this.maxTimeSpanDaysPeriod;
+
+    if (isExceed50Days) {
+      throw new Error(ErrorMessage.MaximumLength50Days);
+    }
   }
 
   public getConsumedHolidayDays(): number {
@@ -229,18 +237,13 @@ export class HolidayPlanner {
       ([startDate, endDate] = timeSpanParts.map(timeSpanPart => timeSpanPart.trim()));
     }
 
+
     this._timeSpanStartDate.timeSpan = startDate;
     this._timeSpanEndDate.timeSpan = endDate;
 
     try {
-      if (this.isEndDateBeforeStartDate()) {
-        throw new Error(ErrorMessage.StartDateMustBeforeEndDate);
-      }
-
-      if (this.isTimeSpanExceeds50Days()) {
-        throw new Error(ErrorMessage.MaximumLength50Days);
-      }
-
+      this.checkTimeSpanEndDateBeforeStartDate();
+      this.checkTimeSpanExceeds50Days();
       this.checkTimeSpanHolidayPeriod();
     } catch (error: unknown) {
       this._timeSpanStartDate.timeSpan = null;
